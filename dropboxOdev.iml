@@ -7,20 +7,20 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$USER_HOME$/Desktop/dropbox-core-sdk-5.0.0" />
+          <root url="file://$USER_HOME$/Downloads/dropbox-core-sdk-5.0.0" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file://$USER_HOME$/Desktop/dropbox-core-sdk-5.0.0" />
+          <root url="file://$USER_HOME$/Downloads/dropbox-core-sdk-5.0.0" />
         </SOURCES>
-        <jarDirectory url="file://$USER_HOME$/Desktop/dropbox-core-sdk-5.0.0" recursive="false" />
-        <jarDirectory url="file://$USER_HOME$/Desktop/dropbox-core-sdk-5.0.0" recursive="false" type="SOURCES" />
+        <jarDirectory url="file://$USER_HOME$/Downloads/dropbox-core-sdk-5.0.0" recursive="false" />
+        <jarDirectory url="file://$USER_HOME$/Downloads/dropbox-core-sdk-5.0.0" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://$USER_HOME$/Downloads/jackson-core-2.9.9.jar!/" />

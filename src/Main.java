@@ -12,10 +12,9 @@ import java.io.InputStream;
 public class Main {
     public static void main(String[] args) throws DbxException, IOException {
         System.out.println("Hello World");
-        DbxClientV2 dbx;
         DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/").build();
 
-        dbx = new DbxClientV2(config, "sl.BEa2iBGLvjxe_KoebnlSEvxhBFyWej8oohNsocyREqDmxrhJQZqNWZemkmIHW60gtDYF-9jTfPoqZkxUl5j4N_fcdt8Q-GDe07z57d0QphzigR1LovNfOxhVjdIB7toyrHBrRKNJgPan");
+        DbxClientV2 dbx = new DbxClientV2(config, "sl.BEa2iBGLvjxe_KoebnlSEvxhBFyWej8oohNsocyREqDmxrhJQZqNWZemkmIHW60gtDYF-9jTfPoqZkxUl5j4N_fcdt8Q-GDe07z57d0QphzigR1LovNfOxhVjdIB7toyrHBrRKNJgPan");
 
         FullAccount account = null;
         try {
