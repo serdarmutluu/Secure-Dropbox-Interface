@@ -11,10 +11,9 @@ import java.io.InputStream;
 
 public class Main {
     public static void main(String[] args) throws DbxException, IOException {
-        System.out.println("Hello World");
         DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/").build();
-
-        DbxClientV2 dbx = new DbxClientV2(config, "sl.BEa2iBGLvjxe_KoebnlSEvxhBFyWej8oohNsocyREqDmxrhJQZqNWZemkmIHW60gtDYF-9jTfPoqZkxUl5j4N_fcdt8Q-GDe07z57d0QphzigR1LovNfOxhVjdIB7toyrHBrRKNJgPan");
+        String token = "sl.BEi37-ZE20gbeAQdVezUt7e2iGyFaXUTjJ71RraYz0t9MIHUhbUGKYhLduyLyIci2kTWs5LKqnSM5lEbfIR-cT1xq8chQ-T2ggQVXmcHSS3OenwRjY4nWuxlaKase7kww7ZWo15DJPEz";
+        DbxClientV2 dbx = new DbxClientV2(config, token);
 
         FullAccount account = null;
         try {
@@ -24,7 +23,7 @@ public class Main {
         }
         System.out.println(account.getName().getDisplayName());
 
-        ListFolderResult result = dbx.files().listFolder("");
+        ListFolderResult result = dbx.files().listFolder("/dedem");
         while (true) {
             for (Metadata metadata : result.getEntries()) {
                 System.out.println(metadata.getPathLower());
@@ -39,7 +38,7 @@ public class Main {
 
         // Upload "test.txt" to Dropbox
         try (InputStream in = new FileInputStream("test.txt")) {
-            FileMetadata metadata = dbx.files().uploadBuilder("/test.txt")
+            FileMetadata metadata = dbx.files().uploadBuilder("/dedem/test.txt")
                     .uploadAndFinish(in);
         }
 
