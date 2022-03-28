@@ -12,7 +12,7 @@ import java.io.InputStream;
 public class Main {
     public static void main(String[] args) throws DbxException, IOException {
         DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/").build();
-        String token = "sl.BEi37-ZE20gbeAQdVezUt7e2iGyFaXUTjJ71RraYz0t9MIHUhbUGKYhLduyLyIci2kTWs5LKqnSM5lEbfIR-cT1xq8chQ-T2ggQVXmcHSS3OenwRjY4nWuxlaKase7kww7ZWo15DJPEz";
+        String token = "sl.BEr8SM-PPnhbhxhhnSjyJ8689GMHorV1ElEgrZV3Vw2ZgMSnCxEgful3aueL7MEyf0tt2glo3n0gIfNaVIngg21jp7_3Lz6pNz6pAtUFvkD-7EHkK7sk-mB44kM3mGZWxX0o7h7ObUgg";
         DbxClientV2 dbx = new DbxClientV2(config, token);
 
         FullAccount account = null;
