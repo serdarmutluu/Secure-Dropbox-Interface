@@ -9,17 +9,33 @@ import com.dropbox.core.v2.files.Metadata;
 import java.io.*;
 
 public class FileManager {
-    static void download(DbxClientV2 dbx, String path) throws DbxException {
+    static synchronized void download(DbxClientV2 dbx, String path) throws DbxException {
+        String userHomeDir = System.getProperty("user.home");
+        String dPath = "";
+        File f = new File(userHomeDir  +"dropbox");
+        if(f.isDirectory()){
+
+        }
+        else {
+            f.mkdir();
+            dPath = userHomeDir + "/dropbox/";
+        }
         ListFolderResult result = dbx.files().listFolder(path);
         while (true) {
             for (Metadata metadata : result.getEntries()) {
                 if(metadata instanceof FolderMetadata){
-                    FileManager.download(dbx,metadata.getPathLower());
+                    File file = new File(dPath + metadata.getPathLower());
+                    if(file.isDirectory()){
+
+                    }
+                    else file.mkdir();
+                    DownloadWorker dw = new DownloadWorker(dbx,metadata.getPathLower());
+                    dw.run();
                 }
                 else{
                     DbxDownloader<FileMetadata> downloader = dbx.files().download(metadata.getPathLower());
                     try {
-                        FileOutputStream out = new FileOutputStream(metadata.getPathLower());
+                        FileOutputStream out = new FileOutputStream(dPath + metadata.getPathLower());
                         downloader.download(out);
                         out.close();
                     } catch (DbxException | FileNotFoundException ex) {

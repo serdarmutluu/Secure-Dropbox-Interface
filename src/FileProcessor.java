@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 public class FileProcessor {
     static void fileProcessor(int cipherMode, String key, File inputFile, File outputFile){
@@ -36,5 +37,12 @@ public class FileProcessor {
                 | IllegalBlockSizeException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static Key getSecureRandomKey(String cipher, int keySize) {
+        byte[] secureRandomKeyBytes = new byte[keySize / 8];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(secureRandomKeyBytes);
+        return new SecretKeySpec(secureRandomKeyBytes, cipher);
     }
 }

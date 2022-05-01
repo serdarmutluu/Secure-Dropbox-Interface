@@ -19,14 +19,24 @@ public class Main {
         DbxAuthFinish authFinish = null;
         authFinish = new PkceAuthorize().authorize(appInfo);
         System.out.println("Authorization complete.");
-        System.out.println("- User ID: " + authFinish.getUserId());
+        /*System.out.println("- User ID: " + authFinish.getUserId());
         System.out.println("- Account ID: " + authFinish.getAccountId());
         System.out.println("- Access Token: " + authFinish.getAccessToken());
         System.out.println("- Expires At: " + authFinish.getExpiresAt());
         System.out.println("- Refresh Token: " + authFinish.getRefreshToken());
-        System.out.println("- Scope: " + authFinish.getScope());
+        System.out.println("- Scope: " + authFinish.getScope());*/
         String token = authFinish.getAccessToken();
+        String dPath ="";
         DbxClientV2 dbx = new DbxClientV2(config, token);
+
+        File f = new File(userHomeDir  +"dropbox");
+        if(f.isDirectory()){
+
+        }
+        else {
+            f.mkdir();
+            dPath = userHomeDir + "/dropbox/";
+        }
 
         FullAccount account = null;
         try {
@@ -37,16 +47,10 @@ public class Main {
         System.out.println(account.getName().getDisplayName());
         System.out.println(dbx.users());
         FileLister.list(dbx,"");
-        DbxDownloader<FileMetadata> downloader = dbx.files().download("/dedem/document.docx");
-        try {
-            FileOutputStream out = new FileOutputStream("document.docx");
-            downloader.download(out);
-            out.close();
-        } catch (DbxException ex) {
-            System.out.println(ex.getMessage());
-        }
-        // Upload "test.txt" to Dropbox
-        FileManager.upload(dbx,"test.txt","/dedem/test.txt");
+        DownloadWorker dw = new DownloadWorker(dbx,"");
+        dw.run();
+//        // Upload "test.txt" to Dropbox
+//        FileManager.upload(dbx,"test.txt","/dedem/test.txt");
 
 
 
