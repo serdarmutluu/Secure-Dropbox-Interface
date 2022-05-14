@@ -5,9 +5,14 @@ import com.dropbox.core.v2.files.FolderMetadata;
 import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.users.FullAccount;
+import com.mongodb.client.MongoDatabase;
 
 import java.io.*;
 import java.nio.file.DirectoryStream;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.*;
 
@@ -15,7 +20,7 @@ public class Main {
     public static void main(String[] args) throws DbxException, IOException {
         String userHomeDir = System.getProperty("user.home");
         DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/").build();
-        DbxAppInfo appInfo  = new DbxAppInfo("aed4jqlgklt5iek","4okiktgmoqgiu50");
+        DbxAppInfo appInfo  = new DbxAppInfo("babjneltp07d691","wq2088pimskcxyh");
         DbxAuthFinish authFinish = null;
         authFinish = new PkceAuthorize().authorize(appInfo);
         System.out.println("Authorization complete.");
@@ -35,7 +40,7 @@ public class Main {
         }
         else {
             f.mkdir();
-            dPath = userHomeDir + "/dropbox/";
+            dPath = userHomeDir + "/dropbox";
         }
 
         FullAccount account = null;
@@ -45,13 +50,17 @@ public class Main {
             e.printStackTrace();
         }
         System.out.println(account.getName().getDisplayName());
-        System.out.println(dbx.users());
-        FileLister.list(dbx,"");
-        DownloadWorker dw = new DownloadWorker(dbx,"");
-        dw.run();
-//        // Upload "test.txt" to Dropbox
-//        FileManager.upload(dbx,"test.txt","/dedem/test.txt");
 
+        //System.out.println(dbx.users());
+        MongoDatabase c = Db.getDb();
+
+        //FileLister.list(dbx,"");
+        //FileManager.upload(dbx,dPath);
+        //DownloadWorker dw = new DownloadWorker(dbx,"");
+        //dw.run();
+//        // Upload "test.txt" to Dropbox
+        String[] users = {"031890066@ogr.uludag.edu.tr"};
+        FileManager.upload(dbx,dPath,users);
 
 
     }

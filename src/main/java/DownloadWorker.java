@@ -14,10 +14,12 @@ public class DownloadWorker implements Runnable{
 
     @Override
     public void run() {
+        System.out.println("Started " + path);
         try {
             FileManager.download(dbx,path);
         } catch (DbxException e) {
             e.printStackTrace();
         }
+        System.out.println("Ended " + path);
     }
 }

@@ -15,6 +15,7 @@ import java.security.SecureRandom;
 public class FileProcessor {
     static void fileProcessor(int cipherMode, String key, File inputFile, File outputFile){
         try {
+
             Key secretKey = new SecretKeySpec(key.getBytes(), "AES");
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(cipherMode, secretKey);
