@@ -19,7 +19,7 @@ public class FileManager {
     static synchronized void download(DbxClientV2 dbx, String path) throws DbxException {
         String userHomeDir = System.getProperty("user.home");
         String dPath = "";
-        File f = new File(userHomeDir  +"dropbox");
+        File f = new File(userHomeDir  +"/dropbox");
         if(f.isDirectory()){
 
         }

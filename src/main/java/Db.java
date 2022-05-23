@@ -59,7 +59,7 @@ public class Db {
             MongoDatabase database = mongoClient.getDatabase("bmb4016");
             MongoCollection fileCollection = database.getCollection("file");
             FindIterable<Document> fi  =  fileCollection.find(
-                    new Document("name", file));
+                    eq("name", file));
             Document doc = fi.first();
 
             Object[] documentRes = doc.values().toArray();
@@ -67,6 +67,7 @@ public class Db {
             List<String> users = (List<String>) documentRes[3];
             for(int i = 0;i< users.size();i++){
                 if(users.get(i).equals(user)){
+                    System.out.println(key);
                     return key;
                 }
             }

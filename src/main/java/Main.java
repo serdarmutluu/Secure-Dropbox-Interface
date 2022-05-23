@@ -7,24 +7,30 @@ import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.users.FullAccount;
 import com.mongodb.Mongo;
 import com.mongodb.client.*;
+import org.bson.BsonDocument;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.print.Doc;
 import javax.swing.*;
 
+import static com.mongodb.client.model.Filters.eq;
+
 public class Main {
     public static void main(String[] args) throws DbxException, IOException {
         String userHomeDir = System.getProperty("user.home");
-        DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/").build();
+        DbxRequestConfig config = DbxRequestConfig.newBuilder("/").build();
         DbxAppInfo appInfo  = new DbxAppInfo("babjneltp07d691","wq2088pimskcxyh");
         DbxAuthFinish authFinish = null;
         authFinish = new PkceAuthorize().authorize(appInfo);
@@ -61,13 +67,19 @@ public class Main {
 
         //FileLister.list(dbx,"");
         //FileManager.upload(dbx,dPath);
-        DownloadWorker dw = new DownloadWorker(dbx,"");
-        dw.run();
+
 //        // Upload "test.txt" to Dropbox
         List<String> users = new ArrayList<String>();
         users.add(dbx.users().getCurrentAccount().getEmail());
         users.add("031890066@ogr.uludag.edu.tr");
-        //FileManager.upload(dbx,userHomeDir + "/kickstart.py",users);
+        //FileManager.upload(dbx,userHomeDir+ "/kickstart1.cpp",users);
+
+        String uri = "mongodb+srv://BMB4016:bmb4016@cluster0.yhakc.mongodb.net/?retryWrites=true&w=majority";
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase("bmb4016");
+            MongoCollection fileCollection = database.getCollection("file");
+            Document d = (Document) fileCollection.find(eq("name","kickstart1.cpp")).first();
+        }
 
 
     }
