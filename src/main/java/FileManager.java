@@ -12,6 +12,7 @@ import com.dropbox.core.v2.sharing.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FileManager {
@@ -41,8 +42,16 @@ public class FileManager {
                     DbxDownloader<FileMetadata> downloader = dbx.files().download(metadata.getPathLower());
                     try {
                         FileOutputStream out = new FileOutputStream(dPath + metadata.getPathLower());
+                        System.out.println(dPath + metadata.getName());
                         downloader.download(out);
                         out.close();
+                        if(!Db.hasPermission(dbx.users().getCurrentAccount().getEmail(), metadata.getName()).equals("-")){
+                            String key = Db.hasPermission(dbx.users().getCurrentAccount().getEmail(), metadata.getName());
+                            System.out.println(key);
+                            File o = new File(dPath+metadata.getPathLower());
+                            File inp = new File(dPath+metadata.getPathLower());
+                            FileProcessor.fileProcessor(2, key,inp,o);
+                        }
                     } catch (DbxException | FileNotFoundException ex) {
                         System.out.println(ex.getMessage());
                     } catch (IOException e) {
@@ -70,13 +79,18 @@ public class FileManager {
         else{
             try (InputStream in = new FileInputStream(sourcePath)) {
                 char[] arr = sourcePath.toCharArray();
-                for (int i = 0; !sourcePath.substring(i,i+8).equals("/dropbox");i++){
+                try{for (int i = 0; !sourcePath.substring(i,i+8).equals("/dropbox");i++){
                     arr[i] = ' ';
+                }}catch (Exception e){
+                    try{arr = arr.toString().replace("/dropbox"," ").split(" ")[1].toCharArray();}
+                    catch (Exception exception) {
+                        arr = ("/" + new File(sourcePath).getName()).toCharArray();
+                    }
                 }
                 String upPath = new String(arr).trim();
+                System.out.println(upPath);
                 FileMetadata metadata = dbx.files().uploadBuilder(upPath)
                         .uploadAndFinish(in);
-
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException | DbxException e) {
@@ -87,12 +101,23 @@ public class FileManager {
     }
 
 
-    static void upload(DbxClientV2 dbx,String sourcePath,String[] users) throws DbxException {
+    static void upload(DbxClientV2 dbx,String sourcePath,List<String> users) throws DbxException {
         File f = new File(sourcePath);
         if(f.isDirectory()){
             char[] arr = sourcePath.toCharArray();
-            for (int i = 0; !sourcePath.substring(i,i+8).equals("/dropbox");i++){
+            try{for (int i = 0; !sourcePath.substring(i,i+8).equals("/dropbox");i++){
                 arr[i] = ' ';
+            }}catch (Exception e){
+                try{arr = arr.toString().replace("/dropbox"," ").split(" ")[1].toCharArray();}
+                catch (Exception exception){
+                    String userHomeDir = System.getProperty("user.home");
+                    try{if((new File(sourcePath).getPath()).substring(0,userHomeDir.length()-1).equals(userHomeDir)){
+                        arr = ( new File(sourcePath).getPath()).substring(userHomeDir.length()-1).toCharArray();
+                    }}
+                    catch (Exception ek){
+                        arr = ( new File(sourcePath).getName()).toCharArray();
+                    }
+                }
             }
             String upPath = new String(arr).trim();
             File[] files = f.listFiles();
@@ -104,28 +129,42 @@ public class FileManager {
         else{
             File out = new File(sourcePath);
             File inp = new File(sourcePath);
-            FileProcessor.fileProcessor(1,"gVkYp3s6v9y$B?E(",inp,out);
+            String key = RandomString.generate();
+            FileProcessor.fileProcessor(1,key,inp,out);
             try (InputStream in = new FileInputStream(sourcePath)) {
                 char[] arr = sourcePath.toCharArray();
-                for (int i = 0; !sourcePath.substring(i,i+8).equals("/dropbox");i++){
+                try{for (int i = 0; !sourcePath.substring(i,i+8).equals("/dropbox");i++){
                     arr[i] = ' ';
+                }}catch (Exception e){
+                    try{arr = arr.toString().replace("/dropbox"," ").split(" ")[1].toCharArray();}
+                    catch (Exception exception){
+                        String userHomeDir = System.getProperty("user.home");
+                        try{ arr = (new File(sourcePath).getPath().replace(userHomeDir, " ").split(" ")[1]).toCharArray();}
+                        catch(Exception exception1)
+                        {arr = ( new File(sourcePath).getPath()).toCharArray();}
+                    }
                 }
                 String upPath = new String(arr).trim();
+                System.out.println(upPath);
                 FileMetadata metadata = dbx.files().uploadBuilder(upPath)
                         .uploadAndFinish(in);
                 List<MemberSelector> newMembers = new ArrayList<MemberSelector>();
                 MemberSelector newMember;
-                for(int i = 0;i<users.length;i++){
-                    newMember = MemberSelector.email(users[i]);
+                newMember = MemberSelector.email(dbx.users().getCurrentAccount().getEmail());
+                newMembers.add(newMember);
+                for(int i = 0;i<users.size();i++){
+                    newMember = MemberSelector.email(users.get(i));
                     newMembers.add(newMember);
                 }
                 List<FileMemberActionResult> fileMemberActionResults = dbx.sharing().addFileMember(upPath, newMembers);
+                Db.addToDb(inp.getName(), key,users);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException | DbxException e) {
                 e.printStackTrace();
             }
-            FileProcessor.fileProcessor(2,"gVkYp3s6v9y$B?E(",inp,out);
+
+            FileProcessor.fileProcessor(2,key,inp,out);
 
         }
 

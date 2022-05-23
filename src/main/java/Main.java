@@ -5,7 +5,9 @@ import com.dropbox.core.v2.files.FolderMetadata;
 import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.users.FullAccount;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.Mongo;
+import com.mongodb.client.*;
+import org.bson.Document;
 
 import java.io.*;
 import java.nio.file.DirectoryStream;
@@ -13,7 +15,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.print.Doc;
 import javax.swing.*;
 
 public class Main {
@@ -52,15 +57,17 @@ public class Main {
         System.out.println(account.getName().getDisplayName());
 
         //System.out.println(dbx.users());
-        MongoDatabase c = Db.getDb();
+        //MongoDatabase c = Db.getDb();
 
         //FileLister.list(dbx,"");
         //FileManager.upload(dbx,dPath);
-        //DownloadWorker dw = new DownloadWorker(dbx,"");
-        //dw.run();
+        DownloadWorker dw = new DownloadWorker(dbx,"");
+        dw.run();
 //        // Upload "test.txt" to Dropbox
-        String[] users = {"031890066@ogr.uludag.edu.tr"};
-        FileManager.upload(dbx,dPath,users);
+        List<String> users = new ArrayList<String>();
+        users.add(dbx.users().getCurrentAccount().getEmail());
+        users.add("031890066@ogr.uludag.edu.tr");
+        //FileManager.upload(dbx,userHomeDir + "/kickstart.py",users);
 
 
     }

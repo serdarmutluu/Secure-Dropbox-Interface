@@ -23,5 +23,31 @@ public class FileLister {
         }
     }
 
+    static void delete(DbxClientV2 dbx,String path,String pathToLook) throws DbxException {
+        ListFolderResult result = dbx.files().listFolder(pathToLook);
+        while (true) {
+            for (Metadata metadata : result.getEntries()) {
+                if(metadata.getPathLower().equals(path)){
+                    dbx.files().deleteV2(metadata.getPathLower());
+                    Db.deleteFromDb(metadata.getName());
+                }
+            }
+
+            for (Metadata metadata : result.getEntries()) {
+                if(metadata instanceof FolderMetadata){
+                    delete(dbx,path,metadata.getPathLower());
+                }
+            }
+
+            if (!result.getHasMore()) {
+                return;
+            }
+
+            result = dbx.files().listFolderContinue(result.getCursor());
+        }
+    }
+
+
+
 
 }
