@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import javax.crypto.Cipher;
 import javax.print.Doc;
 import javax.swing.*;
 
@@ -68,19 +69,34 @@ public class Main {
         //FileLister.list(dbx,"");
         //FileManager.upload(dbx,dPath);
 
-//        // Upload "test.txt" to Dropbox
+        // Upload "test.txt" to Dropbox
         List<String> users = new ArrayList<String>();
         users.add(dbx.users().getCurrentAccount().getEmail());
         users.add("031890066@ogr.uludag.edu.tr");
-        //FileManager.upload(dbx,userHomeDir+ "/kickstart1.cpp",users);
+        FileManager.upload(dbx,userHomeDir+"/kickstart1.cpp",users);
 
         String uri = "mongodb+srv://BMB4016:bmb4016@cluster0.yhakc.mongodb.net/?retryWrites=true&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("bmb4016");
             MongoCollection fileCollection = database.getCollection("file");
             Document d = (Document) fileCollection.find(eq("name","kickstart1.cpp")).first();
+            String t = (String) d.values().toArray()[2];
         }
+        DbxDownloader<FileMetadata> downloader = dbx.files().download("/kickstart1.cpp");
+        FileOutputStream out = new FileOutputStream(dPath+"/kickstart1.cpp");
+        downloader.download(out);
+        out.close();
+        if(!Db.hasPermission(dbx.users().getCurrentAccount().getEmail(), "kickstart1.cpp").equals("-")){
+            String key = Db.hasPermission(dbx.users().getCurrentAccount().getEmail(), "kickstart1.cpp");
+            System.out.println(key);
+            File o = new File(dPath+"/kickstart1.cpp");
+            File inp = new File(dPath+"/kickstart1.cpp");
+            FileProcessor.fileProcessor(2, key,inp,o);
+        }
+        File o = new File(dPath+"/kickstart1.cpp");
+        File inp = new File(dPath+"/kickstart1.cpp");
+        FileProcessor.fileProcessor(Cipher.DECRYPT_MODE, "5X2-3n3l_4TZnF-x-eGKdg==",inp,o);
 
-
+        FileManager.delete(dbx,"/kickstart1.cpp");
     }
 }

@@ -4,6 +4,8 @@ import com.dropbox.core.v2.files.FolderMetadata;
 import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
 
+import java.io.File;
+
 public class FileLister {
     static void list(DbxClientV2 dbx,String path) throws DbxException {
         ListFolderResult result = dbx.files().listFolder(path);
@@ -45,6 +47,12 @@ public class FileLister {
 
             result = dbx.files().listFolderContinue(result.getCursor());
         }
+    }
+
+    static void deleteFromDisk(String dPath,String path){
+        File f = new File(dPath + path);
+        if(f.exists())
+            f.delete();
     }
 
 

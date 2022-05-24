@@ -49,7 +49,6 @@ public class Db {
             database = mongoClient.getDatabase("bmb4016");
             MongoCollection file = database.getCollection("file");
             file.insertOne(new Document("_id", new ObjectId()).append("name", path).append("key", key).append("users", users));
-
         }
     }
 
