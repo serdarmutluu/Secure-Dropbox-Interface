@@ -22,12 +22,13 @@ public class FileManager {
         String dPath = "";
         File f = new File(userHomeDir  +"/dropbox");
         if(f.isDirectory()){
-
         }
         else {
             f.mkdir();
-            dPath = userHomeDir + "/dropbox";
+            dPath = userHomeDir + "/dropbox/";
         }
+        dPath = userHomeDir + "/dropbox/";
+
         ListFolderResult result = dbx.files().listFolder(path);
         while (true) {
             for (Metadata metadata : result.getEntries()) {
@@ -50,13 +51,14 @@ public class FileManager {
                         FileOutputStream out = new FileOutputStream(i.getPath());
                         System.out.println(dPath + metadata.getName());
                         downloader.download(out);
+                        out.flush();
                         out.close();
                         if(!Db.hasPermission(dbx.users().getCurrentAccount().getEmail(), metadata.getName()).equals("-")){
                             String key = Db.hasPermission(dbx.users().getCurrentAccount().getEmail(), metadata.getName());
-                            System.out.println(key);
-                            File o = new File(dPath+metadata.getPathLower());
-                            File inp = new File(dPath+metadata.getPathLower());
-                            FileProcessor.fileProcessor(2, key,inp,o);
+                            System.out.println(dPath+metadata.getName() + " ---------------- ");
+                            File inp = new File(dPath+metadata.getName());
+                            File o = new File(dPath+metadata.getName());
+                            FileProcessor.fileProcessor(Cipher.DECRYPT_MODE, key,inp,o);
                         }
                     } catch (DbxException | FileNotFoundException ex) {
                         System.out.println(ex.getMessage());
@@ -128,6 +130,7 @@ public class FileManager {
                 }
             }
             String upPath = new String(arr).trim();
+            System.out.println(upPath);
             File[] files = f.listFiles();
             for(int i = 0;i<files.length;i++){
                 upload(dbx,files[i].getPath(),users);
@@ -139,7 +142,6 @@ public class FileManager {
             File inp = new File(sourcePath);
             String key = RandomString.generate();
             FileProcessor.fileProcessor(Cipher.ENCRYPT_MODE,key,inp,out);
-            System.out.println(key);
             try (InputStream in = new FileInputStream(sourcePath)) {
                 char[] arr = sourcePath.toCharArray();
                 try{for (int i = 0; !sourcePath.substring(i,i+8).equals("/dropbox");i++){
@@ -172,11 +174,8 @@ public class FileManager {
             } catch (IOException | DbxException e) {
                 e.printStackTrace();
             }
-
             FileProcessor.fileProcessor(Cipher.DECRYPT_MODE,key,inp,out);
-
         }
-
     }
 
     static void delete(DbxClientV2 dbx,String path) throws DbxException {

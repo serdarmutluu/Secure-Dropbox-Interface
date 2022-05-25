@@ -23,12 +23,10 @@ public class FileProcessor {
             FileInputStream inputStream = new FileInputStream(inputFile);
             byte[] inputBytes = new byte[(int) inputFile.length()];
             inputStream.read(inputBytes);
-
             byte[] outputBytes = cipher.doFinal(inputBytes);
 
             FileOutputStream outputStream = new FileOutputStream(outputFile);
             outputStream.write(outputBytes);
-
             inputStream.close();
             outputStream.close();
 
@@ -40,10 +38,4 @@ public class FileProcessor {
         }
     }
 
-    private static Key getSecureRandomKey(String cipher, int keySize) {
-        byte[] secureRandomKeyBytes = new byte[keySize / 8];
-        SecureRandom secureRandom = new SecureRandom();
-        secureRandom.nextBytes(secureRandomKeyBytes);
-        return new SecretKeySpec(secureRandomKeyBytes, cipher);
-    }
 }

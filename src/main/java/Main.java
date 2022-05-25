@@ -73,9 +73,20 @@ public class Main {
         List<String> users = new ArrayList<String>();
         users.add(dbx.users().getCurrentAccount().getEmail());
         users.add("031890066@ogr.uludag.edu.tr");
-        FileManager.upload(dbx,userHomeDir+"/kickstart1.cpp",users);
+        File out = new File(userHomeDir + "/enc-ucgen.c");
+        File in = new File(userHomeDir + "/ucgen.c");
+        String key = "PdSgVkYp2s5v8y/B";
+        FileProcessor.fileProcessor(Cipher.ENCRYPT_MODE,key,in,out);
+        File deIn = new File(userHomeDir + "/enc-ucgen.c");
+        File deOut = new File(userHomeDir + "/dec-ucgen.c");
+        FileProcessor.fileProcessor(Cipher.DECRYPT_MODE,key,deIn,deOut);
 
-        String uri = "mongodb+srv://BMB4016:bmb4016@cluster0.yhakc.mongodb.net/?retryWrites=true&w=majority";
+
+
+        //FileManager.upload(dbx,userHomeDir + "/tolgaulu.cpp",users);
+        //DownloadWorker dw = new DownloadWorker(dbx,"");
+        //dw.run();
+        /*String uri = "mongodb+srv://BMB4016:bmb4016@cluster0.yhakc.mongodb.net/?retryWrites=true&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("bmb4016");
             MongoCollection fileCollection = database.getCollection("file");
@@ -93,10 +104,6 @@ public class Main {
             File inp = new File(dPath+"/kickstart1.cpp");
             FileProcessor.fileProcessor(2, key,inp,o);
         }
-        File o = new File(dPath+"/kickstart1.cpp");
-        File inp = new File(dPath+"/kickstart1.cpp");
-        FileProcessor.fileProcessor(Cipher.DECRYPT_MODE, "5X2-3n3l_4TZnF-x-eGKdg==",inp,o);
-
-        FileManager.delete(dbx,"/kickstart1.cpp");
+        //FileManager.delete(dbx,"/kickstart1.cpp");*/
     }
 }
