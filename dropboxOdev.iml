@@ -45,5 +45,6 @@
     <orderEntry type="library" name="Maven: com.dropbox.core:dropbox-core-sdk:5.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.9" level="project" />
     <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:3.12.11" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.6" level="project" />
   </component>
 </module>

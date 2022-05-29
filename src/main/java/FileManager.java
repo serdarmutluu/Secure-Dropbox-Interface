@@ -9,6 +9,9 @@ import com.dropbox.core.v2.common.PathRoot;
 import com.dropbox.core.v2.files.*;
 import com.dropbox.core.v2.paper.Folder;
 import com.dropbox.core.v2.sharing.*;
+import org.apache.commons.io.FileUtils;
+
+
 
 import javax.crypto.Cipher;
 import java.io.*;
@@ -144,19 +147,29 @@ public class FileManager {
             FileProcessor.fileProcessor(Cipher.ENCRYPT_MODE,key,inp,out);
             try (InputStream in = new FileInputStream(sourcePath)) {
                 char[] arr = sourcePath.toCharArray();
-                try{for (int i = 0; !sourcePath.substring(i,i+8).equals("/dropbox");i++){
+                System.out.println(new String(arr));
+                try{
+                    for (int i = 0; !sourcePath.substring(i,i+8).equals("/dropbox");i++){
                     arr[i] = ' ';
-                }}catch (Exception e){
-                    try{arr = arr.toString().replace("/dropbox"," ").split(" ")[1].toCharArray();}
-                    catch (Exception exception){
-                        String userHomeDir = System.getProperty("user.home");
-                        try{ arr = (new File(sourcePath).getPath().replace(userHomeDir, " ").split(" ")[1]).toCharArray();}
-                        catch(Exception exception1)
-                        {arr = ( new File(sourcePath).getPath()).toCharArray();}
                     }
+                    arr = new String(arr).trim().replace("/dropbox"," ").split(" ")[1].toCharArray();
+                    System.out.println(new String(arr) + "---1");
+                }catch (Exception e){
+                        String userHomeDir = System.getProperty("user.home");
+                        try{
+                            arr = (new File(sourcePath).getPath().replace(userHomeDir, " ").split(" ")[1]).toCharArray();
+                            System.out.println(new String(arr)+ "---3");
+
+                        }
+                        catch(Exception exception1)
+                        {
+                            arr = ( new File(sourcePath).getName()).toCharArray();
+                            System.out.println(new String(arr)+"---4");
+                        }
+
                 }
                 String upPath = new String(arr).trim();
-                System.out.println(upPath);
+                System.out.println(upPath + "-------5");
                 FileMetadata metadata = dbx.files().uploadBuilder(upPath)
                         .uploadAndFinish(in);
                 List<MemberSelector> newMembers = new ArrayList<MemberSelector>();
@@ -173,6 +186,31 @@ public class FileManager {
                 e.printStackTrace();
             } catch (IOException | DbxException e) {
                 e.printStackTrace();
+                char[] arr = sourcePath.toCharArray();
+                try{
+                    for (int i = 0; !sourcePath.substring(i,i+8).equals("/dropbox");i++){
+                        arr[i] = ' ';
+                    }
+                    arr = new String(arr).trim().replace("/dropbox"," ").split(" ")[1].toCharArray();
+                    System.out.println(new String(arr));
+                }catch (Exception ex){
+                        String userHomeDir = System.getProperty("user.home");
+                        try{
+                            arr = (new File(sourcePath).getPath().replace(userHomeDir, " ").split(" ")[1]).toCharArray();
+                            System.out.println(new String(arr));
+
+                        }
+                        catch(Exception exception1)
+                        {
+                            arr = ( new File(sourcePath).getName()).toCharArray();
+                            System.out.println(new String(arr));
+                        }
+                }
+                String upPath = new String(arr).trim();
+                System.out.println(upPath + "-------- path conflict");
+                FileLister.delete(dbx,upPath,"");
+                Db.deleteFromDb(inp.getPath());
+                upload(dbx,sourcePath,users);
             }
             FileProcessor.fileProcessor(Cipher.DECRYPT_MODE,key,inp,out);
         }
@@ -182,6 +220,11 @@ public class FileManager {
         String dPath = System.getProperty("user.home") + "/dropbox";
         FileLister.delete(dbx,path,"");
         FileLister.deleteFromDisk(dPath,path);
+    }
+
+    static void sync(DbxClientV2 dbx) throws IOException {
+        FileUtils.deleteDirectory(new File(System.getProperty("user.home") + "/dropbox"));
+        new DownloadWorker(dbx,"").run();
     }
 
 }

@@ -73,19 +73,8 @@ public class Main {
         List<String> users = new ArrayList<String>();
         users.add(dbx.users().getCurrentAccount().getEmail());
         users.add("031890066@ogr.uludag.edu.tr");
-        File out = new File(userHomeDir + "/enc-ucgen.c");
-        File in = new File(userHomeDir + "/ucgen.c");
-        String key = "PdSgVkYp2s5v8y/B";
-        FileProcessor.fileProcessor(Cipher.ENCRYPT_MODE,key,in,out);
-        File deIn = new File(userHomeDir + "/enc-ucgen.c");
-        File deOut = new File(userHomeDir + "/dec-ucgen.c");
-        FileProcessor.fileProcessor(Cipher.DECRYPT_MODE,key,deIn,deOut);
-
-
-
-        //FileManager.upload(dbx,userHomeDir + "/tolgaulu.cpp",users);
-        //DownloadWorker dw = new DownloadWorker(dbx,"");
-        //dw.run();
+        DownloadWorker dw = new DownloadWorker(dbx,"");
+        dw.run();
         /*String uri = "mongodb+srv://BMB4016:bmb4016@cluster0.yhakc.mongodb.net/?retryWrites=true&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("bmb4016");
