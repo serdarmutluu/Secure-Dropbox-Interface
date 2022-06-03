@@ -18,9 +18,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 import javax.crypto.Cipher;
 import javax.print.Doc;
@@ -61,7 +59,60 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(account.getName().getDisplayName());
+
+        int option = 0;
+
+        Scanner s  = new Scanner(System.in);
+
+        while(option != -1){
+            System.out.println("Dosya listelemek için : 1");
+            System.out.println("Sync işlemi için : 2");
+            System.out.println("Upload işlemi için : 3 ");
+            System.out.println("Silme işlemi için :4");
+            System.out.println("Uygulamadan çıkış yapmak için : -1");
+
+            option = s.nextInt();
+
+            if(option == 1){
+                FileLister.list(dbx,"");
+            }
+            else if(option == 2){
+                FileManager.sync(dbx);
+                System.out.println("Sync işlemi tamamlandı");
+            }
+            else if(option == 3){
+                System.out.println("Lütfen yüklenecek dosyanın pathini giriniz.");
+                String path = "";
+                path = s.next();
+                List<String> users = new ArrayList<String>();
+                if(!path.equals("")){
+                    System.out.println("Dosyayı paylaşacağınız kullanıcı maillerini virgül ile ayırarak giriniz.");
+                    String uStr = s.next();
+                    String[] userArray = uStr.split(",");
+                    for(int i = 0;i<userArray.length;i++){
+                        users.add(userArray[i]);
+                    }
+                    if(users.size() != 0){
+                        FileManager.upload(dbx,path,users);
+                        System.out.println("Dosya başarı ile yüklendi");
+                    }
+                    else{
+                        users.add(dbx.users().getCurrentAccount().getEmail());
+                        FileManager.upload(dbx,path,users);
+                    }
+                }
+                else{
+                    System.out.println("Dosya pathi boş olamaz");
+                }
+            }
+            else if(option == 4){
+                System.out.println("Lütfen buluttan silmek istediğiniz dosyanın pathini girin.");
+                String name = s.nextLine();
+                FileLister.delete(dbx,name,"");
+                System.out.println("Dosya başarıyla silindi.");
+            }
+        }
+
 
         //System.out.println(dbx.users());
         //MongoDatabase c = Db.getDb();
@@ -70,11 +121,12 @@ public class Main {
         //FileManager.upload(dbx,dPath);
 
         // Upload "test.txt" to Dropbox
-        List<String> users = new ArrayList<String>();
-        users.add(dbx.users().getCurrentAccount().getEmail());
-        users.add("031890066@ogr.uludag.edu.tr");
-        DownloadWorker dw = new DownloadWorker(dbx,"");
-        dw.run();
+        //List<String> users = new ArrayList<String>();
+        //users.add(dbx.users().getCurrentAccount().getEmail());
+        //users.add("031890066@ogr.uludag.edu.tr");
+        //FileManager.upload(dbx,userHomeDir + "/website",users);
+        //DownloadWorker dw = new DownloadWorker(dbx,"");
+        //dw.run();
         /*String uri = "mongodb+srv://BMB4016:bmb4016@cluster0.yhakc.mongodb.net/?retryWrites=true&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("bmb4016");

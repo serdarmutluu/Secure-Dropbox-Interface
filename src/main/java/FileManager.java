@@ -118,11 +118,12 @@ public class FileManager {
         File f = new File(sourcePath);
         if(f.isDirectory()){
             char[] arr = sourcePath.toCharArray();
-            try{for (int i = 0; !sourcePath.substring(i,i+8).equals("/dropbox");i++){
+            try{
+                for (int i = 0; !sourcePath.substring(i,i+8).equals("/dropbox");i++){
                 arr[i] = ' ';
-            }}catch (Exception e){
-                try{arr = arr.toString().replace("/dropbox"," ").split(" ")[1].toCharArray();}
-                catch (Exception exception){
+                }
+
+            }catch (Exception e){
                     String userHomeDir = System.getProperty("user.home");
                     try{if((new File(sourcePath).getPath()).substring(0,userHomeDir.length()-1).equals(userHomeDir)){
                         arr = ( new File(sourcePath).getPath()).substring(userHomeDir.length()-1).toCharArray();
@@ -130,12 +131,14 @@ public class FileManager {
                     catch (Exception ek){
                         arr = ( new File(sourcePath).getName()).toCharArray();
                     }
-                }
+
             }
             String upPath = new String(arr).trim();
             System.out.println(upPath);
             File[] files = f.listFiles();
             for(int i = 0;i<files.length;i++){
+                if(files[i].getName().toCharArray()[0] == '.')
+                    continue;
                 upload(dbx,files[i].getPath(),users);
             }
 
