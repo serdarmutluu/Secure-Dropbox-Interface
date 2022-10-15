@@ -59,8 +59,8 @@ public class FileManager {
                         if(!Db.hasPermission(dbx.users().getCurrentAccount().getEmail(), metadata.getName()).equals("-")){
                             String key = Db.hasPermission(dbx.users().getCurrentAccount().getEmail(), metadata.getName());
                             System.out.println(dPath+metadata.getName() + " ---------------- ");
-                            File inp = new File(dPath+metadata.getName());
-                            File o = new File(dPath+metadata.getName());
+                            File inp = new File(dPath+metadata.getPathLower());
+                            File o = new File(dPath+metadata.getPathLower());
                             FileProcessor.fileProcessor(Cipher.DECRYPT_MODE, key,inp,o);
                         }
                     } catch (DbxException | FileNotFoundException ex) {
