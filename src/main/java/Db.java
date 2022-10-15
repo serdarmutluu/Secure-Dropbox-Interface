@@ -15,7 +15,7 @@ public class Db {
     MongoDatabase conn;
 
     private Db(){
-        String uri = "mongodb+srv://BMB4016:bmb4016@cluster0.yhakc.mongodb.net/?retryWrites=true&w=majority";
+        String uri = "<DB_URI>";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("bmb4016");
             this.conn = database;
